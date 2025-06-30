@@ -72,6 +72,7 @@ class ContinuousThoughtMachineSORT(ContinuousThoughtMachine):
         post_activations_tracking = []
         synch_out_tracking = []
         attention_tracking = []
+        eviction_tracking = []
 
         # --- For SORT: no need to featurise data ---
         
@@ -135,7 +136,10 @@ class ContinuousThoughtMachineSORT(ContinuousThoughtMachine):
                 post_activations_tracking.append(activated_state.detach().cpu().numpy())
                 synch_out_tracking.append(synchronisation_out.detach().cpu().numpy())
 
+                if self.adaptive_eviction:
+                    eviction_tracking.append(eviction_index.detach().cpu().numpy())
+
         # --- Return Values ---
         if track:
-            return predictions, certainties, np.array(synch_out_tracking), np.array(pre_activations_tracking), np.array(post_activations_tracking), np.array(attention_tracking)
+            return predictions, certainties, np.array(synch_out_tracking), np.array(pre_activations_tracking), np.array(post_activations_tracking), np.array(attention_tracking), np.array(eviction_tracking) if self.adaptive_eviction else None
         return predictions, certainties, synchronisation_out
