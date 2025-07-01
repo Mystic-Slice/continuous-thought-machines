@@ -27,6 +27,7 @@ class ContinuousThoughtMachineSORT(ContinuousThoughtMachine):
                  dropout_nlm=None,
                  neuron_select_type='random-pairing',  
                  n_random_pairing_self=0,
+                 evict_index=0, 
                  ):
         super().__init__(
             iterations=iterations,
@@ -57,6 +58,8 @@ class ContinuousThoughtMachineSORT(ContinuousThoughtMachine):
         self.attention = None  # Should already be None because super(... heads=0... ) 
         self.q_proj = None  # Should already be None because super(... heads=0... ) 
         self.kv_proj = None  # Should already be None because super(... heads=0... ) 
+
+        self.evict_index = evict_index  # Index of the neuron to evict from the memory
 
 
 
@@ -96,7 +99,8 @@ class ContinuousThoughtMachineSORT(ContinuousThoughtMachine):
             # --- Apply Synapses ---
             state = self.synapses(pre_synapse_input)
             # The 'state_trace' is the history of incoming pre-activations
-            state_trace = torch.cat((state_trace[:, :, 1:], state.unsqueeze(-1)), dim=-1)
+            # state_trace = torch.cat((state_trace[:, :, 1:], state.unsqueeze(-1)), dim=-1)
+            state_trace = torch.cat((state_trace[:, :, :self.evict_index], state_trace[:, :, self.evict_index+1:], state.unsqueeze(-1)), dim=-1)
 
             # --- Apply Neuron-Level Models ---
             activated_state = self.trace_processor(state_trace)

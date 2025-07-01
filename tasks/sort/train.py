@@ -79,6 +79,8 @@ def parse_args():
                                                                        'learnable-fourier', 
                                                                        'multi-learnable-fourier',
                                                                        'custom-rotational'])
+    
+    parser.add_argument('--evict_index', type=int, default=0, help='Index of the neuron to evict from the memory.')
 
     # Training
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training.')
@@ -184,6 +186,7 @@ if __name__=='__main__':
         dropout_nlm=args.dropout_nlm,    
         neuron_select_type=args.neuron_select_type,
         n_random_pairing_self=args.n_random_pairing_self,
+        evict_index=args.evict_index, 
     ).to(device)
 
     
