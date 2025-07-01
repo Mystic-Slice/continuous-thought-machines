@@ -161,7 +161,7 @@ if __name__=='__main__':
         device = 'mps'
     else:
         device = 'cpu'
-    print(f'Running model {args.model} on {device}')
+    print(f'Running model on {device}')
 
     # Build model
     model = ContinuousThoughtMachineSORT(
